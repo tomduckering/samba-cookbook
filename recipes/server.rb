@@ -28,13 +28,13 @@ shares["shares"].each do |k,v|
   end
 end
 
-unless node["samba"]["passdb_backend"] =~ /^ldapsam/
+unless Chef::Config[:solo] && node["samba"]["passdb_backend"] =~ /^ldapsam/
   users = search("users", "*:*")
 end
 
 package value_for_platform(
   ["ubuntu", "debian", "arch"] => { "default" => "samba" },
-  ["redhat", "centos", "fedora", "scientific", "amazon"] => { "default" => "samba3x" },
+  ["redhat", "centos", "fedora", "scientific", "amazon"] => { "default" => "samba" },
   "default" => "samba"
 )
 
@@ -63,7 +63,7 @@ template node["samba"]["config"] do
   end
 end
 
-if users
+if users && ! Chef::Config[:solo]
   users.each do |u|
     samba_user u["id"] do
       password u["smbpasswd"]
