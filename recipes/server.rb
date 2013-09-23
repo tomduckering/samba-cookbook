@@ -28,7 +28,7 @@ shares["shares"].each do |k,v|
   end
 end
 
-unless Chef::Config[:solo] && node["samba"]["passdb_backend"] =~ /^ldapsam/
+unless Chef::Config[:solo] || node["samba"]["passdb_backend"] =~ /^ldapsam/
   users = search("users", "*:*")
 end
 
